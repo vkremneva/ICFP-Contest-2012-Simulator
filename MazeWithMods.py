@@ -13,7 +13,7 @@ class MazeWithMods(Maze):
     def read(self, fname):
         # read maze
         data = np.loadtxt(fname, dtype=str, delimiter='\n', comments=None, usecols=0)
-        print(data)
+        # print(data)
         rows = 0
         for d in data:
             if (d[0] == '#') | (d[0] == 'L') | (d[0] == ' '):
@@ -27,9 +27,9 @@ class MazeWithMods(Maze):
                 if (ch in self.acceptable_chars) | (ch in self.acceptable_chars_from_mods):
                     self.maze[i][j] = ch
                 else:
-                    print("Unacceptable char ", ch)  # todo
+                    raise ValueError("Unacceptable char in maze: " + ch)
 
-        print(self.maze)
+        # print(self.maze)
 
         # read mods
         if rows < data.size:
@@ -48,7 +48,7 @@ class MazeWithMods(Maze):
                         if value in self.acceptable_mods_values['Trampoline']:
                             values.append(value)
                         else:
-                            print('Unacceptable value in Trampoline mod')  # todo
+                            raise ValueError('Unacceptable value in Trampoline mod: ' + value)
 
                         key = splits[2]
                         if key == 'targets':
@@ -57,21 +57,22 @@ class MazeWithMods(Maze):
                             if value in self.acceptable_mods_values['targets']:
                                 values.append(value)
                             else:
-                                print('Unacceptable value in trampoline mod')  # todo
+                                raise ValueError('Unacceptable value in targets mod: ' + value)
                         else:
-                            print('Mod targets after mod trampoline not found')  # todo
+                            raise ValueError('Mod targets after mod trampoline not found')
 
                         ind += 1
                     else:
                         keys.append(key)
                         values.append(splits[1])
                 else:
-                    print("Unacceptable key")  # todo
+                    raise ValueError("Unacceptable mod: " + key)
 
             self.mods = {k: v for k, v in zip(keys, values)}
 
-            print(self.mods)
+            # print(self.mods)
 
 
 maze = MazeWithMods()
-maze.read('maps\\beard5.map')
+maze.read('maps\\trampoline3.map')
+

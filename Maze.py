@@ -22,6 +22,6 @@ class Maze:
                 if ch in self.acceptable_chars:
                     self.maze[i][j] = ch
                 else:
-                    print("Unacceptable char ", ch)  # todo
+                    raise ValueError("Unacceptable char in maze: " + ch)
 
         # print(self.maze)
