@@ -15,15 +15,14 @@ class Algorithm(AStar, Maze):
 
         for ind, n in zip(neighbours, next_neigh):
             i, j = ind
-            if self.maze[i][j] in uncond_acceptable_ch and \
-                    not self.danger((i, j)):
-                available_neighbours.append(ind)
-            elif self.maze[i][j] == cond_acceptable_ch and \
-                    not self.danger((i, j)):
-                inext, jnext = n
-                if self.node_exists(inext, jnext):
-                    if self.maze[inext][jnext] == ' ':
-                        available_neighbours.append(ind)
+            if not self.danger((i, j)):
+                if self.maze[i][j] in uncond_acceptable_ch:
+                    available_neighbours.append(ind)
+                elif self.maze[i][j] == cond_acceptable_ch:
+                    inext, jnext = n
+                    if self.node_exists(inext, jnext):
+                        if self.maze[inext][jnext] == ' ':
+                            available_neighbours.append(ind)
 
         return available_neighbours
 
@@ -48,12 +47,7 @@ class Algorithm(AStar, Maze):
 
         new_maze = deepcopy(self)
         new_maze.move_to((i, j))
-        # print('move')
-        # print(new_maze)
         state = new_maze.update()
-        # print('update')
-        # print(new_maze)
-        # print()
         if state == State.LOSE:
             return True
 

@@ -2,7 +2,7 @@ from Algorithm import*
 
 
 maze = Algorithm()
-maze.read('maps\\contest6.map')
+maze.read('maps\\contest1.map')
 print(maze)
 
 current = maze.R
@@ -10,12 +10,22 @@ while len(maze.lambdas) != 0:
     closest_lambda_ind = min(maze.lambdas, key=lambda x: maze.heuristic_cost_estimate(current, x))
 
     way = maze.astar(current, closest_lambda_ind)
-    if way is None:
-        print(State.LOSE)
-        exit(1)
+    wnext = ()
 
-    next(way)
-    wnext = next(way)
+    if way is None:
+        state = State.LOSE
+        print(state)
+        exit(1)
+    else:
+        next(way)
+
+    if way is None:
+        state = State.LOSE
+        print(state)
+        exit(1)
+    else:
+        wnext = next(way)
+
     state = maze.move_to(wnext)
     print('move:')
     print(maze)
@@ -34,10 +44,31 @@ while len(maze.lambdas) != 0:
     print()
 
 way = maze.astar(current, maze.exit)
-next(way)
 state = State.OK
-while state != State.WIN:
+wnext = ()
+
+if way is None:
+    state = State.LOSE
+    print(state)
+    exit(1)
+else:
+    next(way)
+
+if way is None:
+    state = State.LOSE
+    print(state)
+    exit(1)
+else:
     wnext = next(way)
+
+while state != State.WIN:
+    if way is None:
+        state = State.LOSE
+        print(state)
+        exit(1)
+    else:
+        wnext = next(way)
+
     state = maze.move_to(wnext)
     if state == State.LOSE:
         print(state)
