@@ -2,7 +2,7 @@ from Algorithm import*
 
 
 maze = Algorithm()
-maze.read('maps\\contest1.map')
+maze.read('maps\\contest6.map')
 print(maze)
 
 current = maze.R
@@ -10,6 +10,9 @@ while len(maze.lambdas) != 0:
     closest_lambda_ind = min(maze.lambdas, key=lambda x: maze.heuristic_cost_estimate(current, x))
 
     way = maze.astar(current, closest_lambda_ind)
+    if way is None:
+        print(State.LOSE)
+        exit(1)
 
     next(way)
     wnext = next(way)

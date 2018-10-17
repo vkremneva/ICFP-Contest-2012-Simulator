@@ -1,5 +1,6 @@
 from astar import*
 from Maze import*
+from copy import deepcopy
 
 
 class Algorithm(AStar, Maze):
@@ -13,15 +14,16 @@ class Algorithm(AStar, Maze):
         cond_acceptable_ch = '*'
 
         for ind, n in zip(neighbours, next_neigh):
-            if self.node_exists(*ind):
-                i, j = ind
-                if self.maze[i][j] in uncond_acceptable_ch:
-                    available_neighbours.append(ind)
-                elif self.maze[i][j] == cond_acceptable_ch:
-                    inext, jnext = n
-                    if self.node_exists(inext, jnext):
-                        if self.maze[inext][jnext] == ' ':
-                            available_neighbours.append(ind)
+            i, j = ind
+            if self.maze[i][j] in uncond_acceptable_ch and \
+                    not self.danger((i, j)):
+                available_neighbours.append(ind)
+            elif self.maze[i][j] == cond_acceptable_ch and \
+                    not self.danger((i, j)):
+                inext, jnext = n
+                if self.node_exists(inext, jnext):
+                    if self.maze[inext][jnext] == ' ':
+                        available_neighbours.append(ind)
 
         return available_neighbours
 
@@ -31,28 +33,28 @@ class Algorithm(AStar, Maze):
     def heuristic_cost_estimate(self, current, goal):
         i1, j1 = current
         i2, j2 = goal
-        no_danger = abs(i1 - i2) + abs(j1 - j2)
-        # return min(no_danger, self.danger(goal))
-        return no_danger
+        return abs(i1 - i2) + abs(j1 - j2)
+
+    def is_goal_reached(self, current, goal):
+        return current == goal
 
     def node_exists(self, i, j):
-        if (i >= self.height) | (j >= self.width):
+        if (i >= self.height) or (j >= self.width):
             return False
         return True
 
     def danger(self, possible_node):
-        death = -100
         i, j = possible_node
 
-        if self.node_exists(i - 1, j):
-            if self.maze[i - 1][j] == '*':
-                return death
-        if self.node_exists(i - 1, j - 1):
-            if (self.maze[i - 1][j - 1] == '*') & \
-                    ((self.maze[i][j - 1] == '*') | (self.maze[i][j - 1] == '\\')):
-                return death
-        if self.node_exists(i - 1, j + 1):
-            if (self.maze[i - 1][j + 1] == '*') & (self.maze[i][j + 1] == '*'):
-                return death
+        new_maze = deepcopy(self)
+        new_maze.move_to((i, j))
+        # print('move')
+        # print(new_maze)
+        state = new_maze.update()
+        # print('update')
+        # print(new_maze)
+        # print()
+        if state == State.LOSE:
+            return True
 
-        return 1
+        return False
