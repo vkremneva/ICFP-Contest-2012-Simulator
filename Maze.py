@@ -89,12 +89,14 @@ class Maze:
     def move_to(self, dest):
         state = State.OK
         wall = False
+        score = 0
         i, j = self.R
 
         destinations = {'U': (i-1, j), 'D': (i+1, j), 'L': (i, j-1), 'R': (i, j+1)}
         if dest in destinations.values():
             idest, jdest = dest
             if self.maze[idest][jdest] == '\\':
+                score += 25
                 self.lambdas.remove(dest)
                 if len(self.lambdas) == 0:
                     ie, je = self.exit
@@ -115,10 +117,11 @@ class Maze:
 
             elif self.maze[idest][jdest] == 'O':
                 state = State.WIN
+                score += 50
 
             if not wall:
                 self.R = dest
                 self.maze[idest][jdest] = 'R'
                 self.maze[i][j] = ' '
 
-        return state
+        return state, score
