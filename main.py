@@ -42,7 +42,6 @@ if state != State.OK:
 
 # going outside
 way = maze.astar(current, maze.exit)
-state = State.OK
 wnext = ()
 
 if way is None:

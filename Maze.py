@@ -58,7 +58,7 @@ class Maze:
         fatal1 = '*R'
         fatal2 = ['* *R', ' *R*', '* \\R']
 
-        for i in range(self.height-2, 0, -1):
+        for i in range(self.height-2, -1, -1):
             for j in range(0, self.width-1):
                 neighbours = self.to_char(self.maze[i][j]) + self.to_char(self.maze[i][j+1]) + \
                              self.to_char(self.maze[i+1][j]) + self.to_char(self.maze[i+1][j+1])
