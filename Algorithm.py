@@ -1,6 +1,5 @@
 from astar import*
 from Maze import*
-from copy import deepcopy
 
 
 class Algorithm(AStar, Maze):
@@ -43,12 +42,33 @@ class Algorithm(AStar, Maze):
         return True
 
     def danger(self, possible_node):
-        i, j = possible_node
+        ip, jp = possible_node
+        iR, jR = self.R
 
-        new_maze = deepcopy(self)
-        new_maze.move_to((i, j))
-        state = new_maze.update()
+        small_maze = Maze()
+        smsize = 5
+
+        small_maze.width = smsize
+        small_maze.height = smsize
+        small_maze.maze = np.empty(shape=(smsize, smsize), dtype=str)
+        smmid = smsize // 2
+        small_maze.R = (smmid, smmid)
+
+        for i in range(-smmid, smmid + 1, 1):
+            for j in range(-smmid, smmid + 1, 1):
+                if self.node_exists(iR + i, jR + j):
+                    if self.maze[iR + i][jR + j] == '\\':
+                        small_maze.lambdas.append((i + smmid, j + smmid))
+                    small_maze.maze[i + smmid][j + smmid] = self.maze[iR + i][jR + j]
+                else:
+                    small_maze.maze[i + smmid][j + smmid] = '#'
+
+        smpos = (smmid - iR + ip, smmid - jR + jp)
+        small_maze.move_to(smpos)
+        state = small_maze.update()
+
         if state == State.LOSE:
             return True
 
         return False
+
