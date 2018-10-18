@@ -60,8 +60,8 @@ class Maze:
 
         for i in range(self.height-2, 0, -1):
             for j in range(0, self.width-1):
-                neighbours = str(self.maze[i][j]) + str(self.maze[i][j+1]) + \
-                             str(self.maze[i+1][j]) + str(self.maze[i+1][j+1])
+                neighbours = self.to_char(self.maze[i][j]) + self.to_char(self.maze[i][j+1]) + \
+                             self.to_char(self.maze[i+1][j]) + self.to_char(self.maze[i+1][j+1])
 
                 if (neighbours[0] == rule1[0]) & (neighbours[2] == rule1[1]):
                     self.maze[i][j] = ' '
@@ -125,3 +125,9 @@ class Maze:
                 self.maze[i][j] = ' '
 
         return state, score
+
+    def to_char(self, char):
+        if char == '':
+            return ' '
+        else:
+            return str(char)
