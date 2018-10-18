@@ -126,7 +126,8 @@ class Maze:
 
         return state, score
 
-    def to_char(self, char):
+    @staticmethod
+    def to_char(char):
         if char == '':
             return ' '
         else:
