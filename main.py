@@ -1,7 +1,7 @@
 from Algorithm import*
 
 maze = Algorithm()
-maze.read('maps\\contest5.map')
+maze.read('maps\\team.map')
 score = 0
 
 # gather lambdas
@@ -41,7 +41,7 @@ if state != State.OK:
     exit(0)
 
 # going outside
-way = maze.astar(current, maze.exit)
+way = maze.astar(maze.R, maze.exit)
 wnext = ()
 
 if way is None:
@@ -60,23 +60,17 @@ else:
         exit(0)
 
 while state != State.WIN:
-    if way is None:
-        state = State.WIN
-        break
-    else:
-        try:
-            wnext = next(way)
-        except StopIteration:
-            state = State.WIN
-            break
-
     state, new_score = maze.move_to(wnext)
     score = score - 1 + new_score
     if state != State.OK:
         break
 
     maze.update()
-    print(maze)
+
+    try:
+        wnext = next(way)
+    except StopIteration:
+        state = State.WIN
 
 if state != State.OK:
     print(state)
