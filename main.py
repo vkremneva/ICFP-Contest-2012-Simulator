@@ -1,24 +1,30 @@
 from Algorithm import*
+from copy import deepcopy
 
 maze = Algorithm()
-maze.read('maps\\contest6.map')
+maze.read('maps\\contest9.map')
 score = 0
 amount_of_steps_to_remember = 3
 unreachable_lambdas = []
+possible_lambdas = deepcopy(maze.lambdas)
 last_steps = []
 
 # gather lambdas
 current = maze.R
 state = State.OK
-while len(maze.lambdas) != 0:
-    # print(maze)
-    # print()
-    closest_lambda_ind = min(maze.lambdas, key=lambda x: maze.heuristic_cost_estimate(current, x))
+while (len(maze.lambdas) != 0) and (len(possible_lambdas) != 0):
+    closest_lambda_ind = min(possible_lambdas, key=lambda x: maze.heuristic_cost_estimate(current, x))
 
     way = maze.astar(current, closest_lambda_ind)
     wnext = ()
 
-    if way is None or type(way) == list:
+    if way is None:
+        unreachable_lambdas.append(closest_lambda_ind)
+        if closest_lambda_ind in possible_lambdas:
+            possible_lambdas.remove(closest_lambda_ind)
+        continue
+
+    if type(way) == list:
         state = State.WIN
         break
     else:
@@ -30,9 +36,13 @@ while len(maze.lambdas) != 0:
             break
 
     state, new_score = maze.move_to(wnext)
-    if new_score == 25 and len(unreachable_lambdas) != 0:
-        maze.lambdas.append(unreachable_lambdas.pop())
-    # print(maze)
+    if new_score == 25:
+        for l in possible_lambdas:
+            if not(l in maze.lambdas):
+                possible_lambdas.remove(l)
+        if len(unreachable_lambdas) != 0:
+            possible_lambdas.append(unreachable_lambdas.pop())
+
     score = score - 1 + new_score
     if state == State.WIN:
         break
@@ -48,8 +58,8 @@ while len(maze.lambdas) != 0:
     else:
         if last_steps[0] == last_steps[2]:
             unreachable_lambdas.append(closest_lambda_ind)
-            if closest_lambda_ind in maze.lambdas:
-                maze.lambdas.remove(closest_lambda_ind)
+            if closest_lambda_ind in possible_lambdas:
+                possible_lambdas.remove(closest_lambda_ind)
         last_steps.clear()
 
 if state != State.OK:
