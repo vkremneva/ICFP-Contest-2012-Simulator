@@ -1,12 +1,15 @@
 from Algorithm import*
 from copy import deepcopy
+from collections import defaultdict
 
 maze = Algorithm()
 maze.read('maps\\contest9.map')
 score = 0
 amount_of_steps_to_remember = 3
+critical_count_visits = 10
 unreachable_lambdas = []
 possible_lambdas = deepcopy(maze.lambdas)
+count_visits = defaultdict(int)
 last_steps = []
 
 # gather lambdas
@@ -35,12 +38,18 @@ while (len(maze.lambdas) != 0) and (len(possible_lambdas) != 0):
             state = State.WIN
             break
 
+    if count_visits[wnext] == 10:
+        state = State.WIN
+        break
+
     state, new_score = maze.move_to(wnext)
+    count_visits[wnext] += 1
     if new_score == 25:
         for l in possible_lambdas:
             if not(l in maze.lambdas):
                 possible_lambdas.remove(l)
-        if len(unreachable_lambdas) != 0:
+                break
+        if (len(unreachable_lambdas) != 0) and (len(possible_lambdas) == 0):
             possible_lambdas.append(unreachable_lambdas.pop())
 
     score = score - 1 + new_score
