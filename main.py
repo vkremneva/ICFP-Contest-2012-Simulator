@@ -2,19 +2,22 @@ from Algorithm import*
 from copy import deepcopy
 from collections import defaultdict
 
-maze = Algorithm()
-maze.read('maps\\contest9.map')
-score = 0
 amount_of_steps_to_remember = 3
 critical_count_visits = 10
-unreachable_lambdas = []
-possible_lambdas = deepcopy(maze.lambdas)
-count_visits = defaultdict(int)
-last_steps = []
 
-# gather lambdas
+maze = Algorithm()
+maze.read('maps\\contest9.map')
+
+# initial values
+score = 0
 current = maze.R
 state = State.OK
+last_steps = []
+unreachable_lambdas = []
+count_visits = defaultdict(int)
+possible_lambdas = deepcopy(maze.lambdas)
+
+# gather lambdas
 while (len(maze.lambdas) != 0) and (len(possible_lambdas) != 0):
     closest_lambda_ind = min(possible_lambdas, key=lambda x: maze.heuristic_cost_estimate(current, x))
 
